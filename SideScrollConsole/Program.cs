@@ -77,6 +77,13 @@ namespace SideScrollConsole
                 )
             );
 
+            animatedTests.Add(
+                new AnimatedTest(
+                    new Vector2(25, 7),
+                    new List<string>() { " - "," * " }
+                )
+            );
+
             Console.WriteLine("Press any key to start");
             Console.ReadKey();
             Console.Clear();

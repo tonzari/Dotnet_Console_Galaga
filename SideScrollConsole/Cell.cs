@@ -12,7 +12,6 @@ namespace SideScrollConsole
         public int y;
         public string defaultDisplayChars = " . ";
         public string displayCharacters = "";
-        public int animIndex = 0;
         public ConsoleColor color;
         public static List<Cell> cells = new List<Cell>();
 

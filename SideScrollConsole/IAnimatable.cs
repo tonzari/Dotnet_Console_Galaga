@@ -7,7 +7,7 @@ namespace SideScrollConsole
     {
         public DateTime LastAnimFrameTimeStamp { get; set; }
         public TimeSpan DeltaTime { get; set; }
-        public double AnimationFrameRate { get; set; }
+        public double AnimFrameInMilliseconds { get; set; }
         public List<string> Frames { get; set; }
         public int animIndex { get; set; }
 

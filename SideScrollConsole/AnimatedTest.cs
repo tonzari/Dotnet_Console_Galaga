@@ -15,7 +15,7 @@ namespace SideScrollConsole
 
         public DateTime LastAnimFrameTimeStamp { get; set; }
         public TimeSpan DeltaTime { get; set; }
-        public double AnimationFrameRate { get => 100; set { } }
+        public double AnimFrameInMilliseconds { get => 83; set { } }
         public int animIndex { get; set; }
 
         public List<string> Frames { get; set; }
@@ -24,7 +24,7 @@ namespace SideScrollConsole
         {
             DeltaTime = DateTime.Now - LastAnimFrameTimeStamp;
 
-            if (DeltaTime.TotalMilliseconds >= AnimationFrameRate)
+            if (DeltaTime.TotalMilliseconds >= AnimFrameInMilliseconds)
             {
                 displayCharacter = Frames[animIndex];
 
@@ -33,7 +33,7 @@ namespace SideScrollConsole
 
             animIndex++;
 
-            if (animIndex > Frames.Count-1)
+            if (animIndex >= Frames.Count)
             {
                 animIndex = 0;
             }
