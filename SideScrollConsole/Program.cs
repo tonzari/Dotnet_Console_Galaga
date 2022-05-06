@@ -6,128 +6,6 @@ using System.Linq;
 namespace SideScrollConsole
 {
 
-    public class Vector2
-    {
-        public double x;
-        public double y;
-
-        public Vector2(double x, double y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    public class Cell
-    {
-        public static int counter = 0;
-        public int id;
-        public int x;
-        public int y;
-        public string defaultDisplayChars = " . ";
-        public string displayCharacters = "";
-        public int animIndex = 0;
-        public ConsoleColor color;
-        public static List<Cell> cells = new List<Cell>();
-
-        public Cell(int x, int y)
-        {
-            counter++;
-            this.id = counter;
-            this.x = x;
-            this.y = y;
-            color = ConsoleColor.Blue;
-            cells.Add(this);
-        }
-
-        public List<GameObject> GetOccupants(List<GameObject> gameObjects)
-        {
-            return gameObjects.Where(go => go.GetPosX() == x && go.GetPosY() == y).ToList();
-        }
-
-        public GameObject GetStrongestOccupant(List<GameObject> gameObjects)
-        {
-            List<GameObject> occupants = GetOccupants(gameObjects);
-            GameObject winner = occupants.OrderByDescending(x => x.health).First();
-
-            return winner;    
-        }
-    }
-
-    public class GameObject
-    {
-        public Vector2 position;
-        public bool isActive;
-        public string displayCharacter = "";
-        public ConsoleColor color;
-        public int health = 1;
-
-        public static List<GameObject> AllObjects = new List<GameObject>();
-
-        public GameObject(Vector2 position)
-        {
-            color = ConsoleColor.Blue;
-            this.position = position;
-            isActive = true;
-            AllObjects.Add(this);
-        }
-
-        public int GetPosX()
-        {
-            return (int)Math.Round(this.position.x);
-        }
-
-        public int GetPosY()
-        {
-            return (int)Math.Round(this.position.y);
-        }
-    }
-
-    class Player : GameObject
-    {
-        public List<Trajectory> trajectories = new List<Trajectory>();
-
-        public Player(Vector2 position) : base(position)
-        {
-            color = ConsoleColor.Cyan;
-            health = 4;
-            displayCharacter = "\\o/";
-        }
-
-        public void MoveTo(Vector2 targetPosition)
-        {
-            position.x = targetPosition.x;
-            position.y = targetPosition.y;
-        }
-
-        public void Shoot(Vector2 targetPosition)
-        {
-            Trajectory trajectory = new Trajectory(new Vector2(this.position.x, this.position.y));
-            trajectories.Add(trajectory);
-        }
-    }
-
-    class Trajectory : GameObject
-    {
-        public Trajectory(Vector2 position) : base(position)
-        {
-            color = ConsoleColor.Yellow;
-            health = 6;
-            displayCharacter = " ^ ";
-        }
-    }
-
-    class FallingObstacle : GameObject
-    {
-        public FallingObstacle(Vector2 position) : base(position)
-        {
-            color = ConsoleColor.White;
-            health = 5;
-            displayCharacter = " v ";
-        }
-
-    }
-
     class Program
     {
 
@@ -144,8 +22,8 @@ namespace SideScrollConsole
 
         static void Main(string[] args)
         {
-            Initialize();
-            GameLoop();
+            Initialize(); // Runs once sets up player and enemies
+            GameLoop(); // Runs repeatedly until player quits the game
             EndGame();
         }
 
@@ -225,6 +103,7 @@ namespace SideScrollConsole
                     {
                         obstacle.position.x = -1000;
                         obstacle.position.y = 1000;
+                        obstacle.isActive = false;
                     }
                 }
             }
@@ -243,7 +122,7 @@ namespace SideScrollConsole
         {
             Console.Clear();
 
-            Console.WriteLine(String.Format("{0,-10}", remainingObstacles.Count()));
+            Console.WriteLine(String.Format("{0,-10}", remainingObstacles.Count(o => o.isActive == true)));
 
             foreach (var cell in Cell.cells)
             {
@@ -251,6 +130,7 @@ namespace SideScrollConsole
 
                 Console.Write(cell.displayCharacters);
 
+                // Create a new row
                 if (cell.x % playAreaWidth == 0)
                 {
                     Console.WriteLine();
