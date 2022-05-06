@@ -21,6 +21,7 @@ namespace SideScrollConsole
         static Player player;
         static List<FallingObstacle> fallingObstacles = new List<FallingObstacle>();
         static IEnumerable<GameObject> remainingObstacles; // I don't remember why I made two collections here. Investigate...
+        static List<Enemy> enemies = new List<Enemy>();
 
         // Pretend Physics
         static double gravity = -0.20; // Determines the speed that falling objects move down on the grid.
@@ -28,26 +29,14 @@ namespace SideScrollConsole
         // Input
         static ConsoleKey key;
 
+        // Util
+        static Random random = new Random();
 
         static void Main(string[] args)
         {
             Initialize(); // Runs once. Sets up grid, player, and enemies.
             GameLoop(); // Runs repeatedly until player wins/quits the game.
             EndGame();
-        }
-
-        private static void EndGame()
-        {
-            Console.Clear();
-
-            if (remainingObstacles.Count() == 0)
-            {
-                Console.WriteLine("YOU WIN!");
-            }
-
-            Console.WriteLine("Exiting app...");
-
-            Thread.Sleep(4000);
         }
 
         static void Initialize()
@@ -71,6 +60,11 @@ namespace SideScrollConsole
             fallingObstacles.Add(new FallingObstacle(new Vector2(4, 25)));
             fallingObstacles.Add(new FallingObstacle(new Vector2(11, 38)));
 
+            enemies.Add(new Enemy(new Vector2(15,25)));
+            enemies.Add(new Enemy(new Vector2(20,25)));
+            enemies.Add(new Enemy(new Vector2(2,25)));
+            enemies.Add(new Enemy(new Vector2(9,25)));
+
             Console.WriteLine("Press any key to start");
             Console.ReadKey();
             Console.Clear();
@@ -85,7 +79,7 @@ namespace SideScrollConsole
 
             while (gameIsRunning)
             {
-                remainingObstacles = GameObject.AllObjects.Where(o => o is FallingObstacle && o.isActive);
+                remainingObstacles = GameObject.AllObjects.Where(o => o is FallingObstacle || o is Enemy && o.isActive);
 
                 if (remainingObstacles.Count() <= 0)
                 {
@@ -98,10 +92,25 @@ namespace SideScrollConsole
                 {
                     HandleInput();
                     HandlePhysics();
+                    ProcessEnemies();
                     RenderScreen();
 
                     frameCompletedTimeStamp = DateTime.Now;
                 }                
+            }
+        }
+
+        private static void ProcessEnemies()
+        {
+
+
+            foreach (var item in enemies)
+            {
+                int newX = Math.Clamp(item.GetPosX() + random.Next(-1, 2),0, playAreaWidth);
+
+                Vector2 newPosition = new Vector2(newX, item.GetPosY());
+
+                item.MoveTo(newPosition);
             }
         }
 
@@ -133,6 +142,20 @@ namespace SideScrollConsole
             }
         }
 
+        private static void EndGame()
+        {
+            Console.Clear();
+
+            if (remainingObstacles.Count() == 0)
+            {
+                Console.WriteLine("YOU WIN!");
+            }
+
+            Console.WriteLine("Exiting app...");
+
+            Thread.Sleep(4000);
+        }
+
         private static void RenderScreen()
         {
             Console.Clear();
@@ -159,6 +182,7 @@ namespace SideScrollConsole
 
             if (occupants.Any())
             {
+                // this is a very crude way to handle "collisions" between game objects that occupy the same space on the grid, and needs to be reworked
                 GameObject displayPriority = occupants.OrderByDescending(x => x.health).First();
 
                 List<GameObject> losers = occupants.OrderBy(x => x.health).Take(occupants.Count - 1).ToList();

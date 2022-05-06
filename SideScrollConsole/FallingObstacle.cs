@@ -10,6 +10,5 @@ namespace SideScrollConsole
             health = 5;
             displayCharacter = " v ";
         }
-
     }
 }
