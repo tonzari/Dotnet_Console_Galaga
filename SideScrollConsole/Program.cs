@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace SideScrollConsole
 {
-
     class Program
     {
         // Grid
@@ -20,8 +19,9 @@ namespace SideScrollConsole
         // Game Objects
         static Player player;
         static List<FallingObstacle> fallingObstacles = new List<FallingObstacle>();
-        static IEnumerable<GameObject> remainingObstacles; // I don't remember why I made two collections here. Investigate...
+        static IEnumerable<GameObject> remainingObstacles; // I don't remember why I made two collections here. Investigate... I think it was to add different types of game objects
         static List<Enemy> enemies = new List<Enemy>();
+        static List<AnimatedTest> animatedTests = new List<AnimatedTest>();
 
         // Pretend Physics
         static double gravity = -0.20; // Determines the speed that falling objects move down on the grid.
@@ -65,6 +65,13 @@ namespace SideScrollConsole
             enemies.Add(new Enemy(new Vector2(2,25)));
             enemies.Add(new Enemy(new Vector2(9,25)));
 
+            enemies.Add(new Enemy(new Vector2(15, 24)));
+            enemies.Add(new Enemy(new Vector2(20, 24)));
+            enemies.Add(new Enemy(new Vector2(2, 24)));
+            enemies.Add(new Enemy(new Vector2(9, 24)));
+
+            animatedTests.Add(new AnimatedTest(new Vector2(10, 10)));
+
             Console.WriteLine("Press any key to start");
             Console.ReadKey();
             Console.Clear();
@@ -93,6 +100,7 @@ namespace SideScrollConsole
                     HandleInput();
                     HandlePhysics();
                     ProcessEnemies();
+                    ProcessAnimatedObjects();
                     RenderScreen();
 
                     frameCompletedTimeStamp = DateTime.Now;
@@ -102,15 +110,21 @@ namespace SideScrollConsole
 
         private static void ProcessEnemies()
         {
-
-
-            foreach (var item in enemies)
+            foreach (Enemy item in enemies)
             {
-                int newX = Math.Clamp(item.GetPosX() + random.Next(-1, 2),0, playAreaWidth);
+                int newX = Math.Clamp(item.GetPosX() + random.Next(-1, 2),1, playAreaWidth);
 
                 Vector2 newPosition = new Vector2(newX, item.GetPosY());
 
                 item.MoveTo(newPosition);
+            }
+        }
+
+        private static void ProcessAnimatedObjects()
+        {
+            foreach (AnimatedTest item in animatedTests)
+            {
+                item.Animate();
             }
         }
 
@@ -127,7 +141,6 @@ namespace SideScrollConsole
                     {
                         obstacle.position.x = -1000;
                         obstacle.position.y = 1000;
-                        obstacle.isActive = false;
                     }
                 }
             }
