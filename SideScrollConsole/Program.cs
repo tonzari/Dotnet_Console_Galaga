@@ -70,7 +70,12 @@ namespace SideScrollConsole
             enemies.Add(new Enemy(new Vector2(2, 24)));
             enemies.Add(new Enemy(new Vector2(9, 24)));
 
-            animatedTests.Add(new AnimatedTest(new Vector2(10, 10)));
+            animatedTests.Add(
+                new AnimatedTest(
+                    new Vector2(10, 10),
+                    new List<string>() { "-_-", "-_-", "*_*", "*_*", "*_*", "*_*", "*_*", "*_*", "^_-", "^_-", "^_-", "^_-" }
+                )
+            );
 
             Console.WriteLine("Press any key to start");
             Console.ReadKey();
