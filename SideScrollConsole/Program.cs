@@ -8,17 +8,26 @@ namespace SideScrollConsole
 
     class Program
     {
-
-        static bool gameIsRunning = false;
-        static ConsoleKey key;
-        static int fpsTarget = 24;
-        static double renderSpeedInMilliseconds => Math.Ceiling(1000.00 / fpsTarget);
+        // Grid
         static int playAreaWidth = 30;
         static int playAreaHeight = 30;
+
+        // Time
+        static int fpsTarget = 24;
+        static double renderSpeedInMilliseconds => Math.Ceiling(1000.00 / fpsTarget);
+        static bool gameIsRunning = false;
+
+        // Game Objects
         static Player player;
         static List<FallingObstacle> fallingObstacles = new List<FallingObstacle>();
-        static double gravity = -0.20;
-        static IEnumerable<GameObject> remainingObstacles;
+        static IEnumerable<GameObject> remainingObstacles; // I don't remember why I made two collections here. Investigate...
+
+        // Pretend Physics
+        static double gravity = -0.20; // Determines the speed that falling objects move down on the grid.
+
+        // Input
+        static ConsoleKey key;
+
 
         static void Main(string[] args)
         {
