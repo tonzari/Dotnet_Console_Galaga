@@ -22,15 +22,22 @@ namespace SideScrollConsole
 
         static void Main(string[] args)
         {
-            Initialize(); // Runs once sets up player and enemies
-            GameLoop(); // Runs repeatedly until player quits the game
+            Initialize(); // Runs once. Sets up grid, player, and enemies.
+            GameLoop(); // Runs repeatedly until player wins/quits the game.
             EndGame();
         }
 
         private static void EndGame()
         {
             Console.Clear();
-            Console.WriteLine("YOU WIN!");
+
+            if (remainingObstacles.Count() == 0)
+            {
+                Console.WriteLine("YOU WIN!");
+            }
+
+            Console.WriteLine("Exiting app...");
+
             Thread.Sleep(4000);
         }
 
@@ -70,7 +77,6 @@ namespace SideScrollConsole
             while (gameIsRunning)
             {
                 remainingObstacles = GameObject.AllObjects.Where(o => o is FallingObstacle && o.isActive);
-
 
                 if (remainingObstacles.Count() <= 0)
                 {
